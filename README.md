@@ -22,13 +22,15 @@ Os testes abrem o navegador, usam o sistema como um lojista usaria e conferem o 
 | Vendas | Cancelar a venda devolve os itens ao estoque |
 | Celular | Login pelo Enter do teclado (Pixel 7 emulado) |
 | Celular | Erro de senha curta na tela de criar conta |
-| Celular | **Bug encontrado**: tocar em "Entrar" com o teclado aberto não faz login (ver abaixo) |
+| Celular | Tocar em "Entrar" com o teclado aberto faz login (**bug encontrado e corrigido**, ver abaixo) |
 
-## Bug encontrado pelos testes
+## Bug encontrado (e corrigido) pelos testes
 
-No celular, quando um campo está em foco (teclado aberto), o painel de cima da tela de login encolhe para dar espaço. Ao tocar em **Entrar**, o campo perde o foco primeiro, o painel volta ao tamanho normal e empurra o botão para baixo **antes de o toque terminar**. O toque cai fora do botão e nada acontece. Pelo Enter do teclado funciona.
+No celular, quando um campo está em foco (teclado aberto), o painel de cima da tela de login encolhe para dar espaço. Ao tocar em **Entrar**, o campo perdia o foco primeiro, o painel voltava ao tamanho normal e empurrava o botão para baixo **antes de o toque terminar**. O toque caía fora do botão e nada acontecia. Pelo Enter do teclado funcionava.
 
-O teste está marcado com `test.fail()`: a suíte continua verde e o Playwright avisa quando o bug for corrigido (o teste passa a "falhar ao falhar").
+1. O teste `tocar no botão Entrar com o teclado aberto faz o login` reproduziu o bug (marcado com `test.fail()` enquanto o bug existia).
+2. Correção no Nexora: [`LayoutAuth.jsx`](https://github.com/martinskb/nexora/blob/main/frontend/src/components/LayoutAuth.jsx), apertar um botão do formulário não tira mais o foco do campo.
+3. O teste passou a valer como teste normal e protege contra a volta do bug (regressão).
 
 ## Decisões
 

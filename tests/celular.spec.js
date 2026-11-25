@@ -10,13 +10,10 @@ test.describe('No celular', () => {
     await expect(page).toHaveURL('/')
   })
 
-  // BUG encontrado por este teste (25/11/2026):
-  // no celular, com o campo em foco ("teclado aberto"), o painel de cima encolhe
-  // (LayoutAuth.module.css, `.pagina:has(input:focus)`). Ao tocar em "Entrar",
-  // o campo perde o foco, o painel volta a crescer e empurra o botão para baixo
-  // antes do toque terminar. O toque cai fora do botão e nada acontece.
-  // test.fail() mantém a suíte verde e avisa quando o bug for corrigido.
-  test.fail('tocar no botão Entrar com o teclado aberto faz o login', async ({ page, loja }) => {
+  // Regressão de um bug encontrado por este teste (25/11/2026): com o teclado
+  // aberto, tocar em "Entrar" tirava o foco do campo, o painel de cima crescia e
+  // empurrava o botão para longe do dedo. Corrigido no LayoutAuth.jsx do Nexora.
+  test('tocar no botão Entrar com o teclado aberto faz o login', async ({ page, loja }) => {
     await page.context().clearCookies()
     await page.goto('/entrar')
     await page.getByLabel('E-mail').fill(loja.email)
