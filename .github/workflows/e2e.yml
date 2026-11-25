@@ -1,0 +1,45 @@
+name: Testes E2E
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: nexora_e2e
+          MARIADB_USER: nexora
+          MARIADB_PASSWORD: e2e
+        ports: ['3307:3306']
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=5s --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: martinskb/nexora
+          path: nexora
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm ci
+        working-directory: nexora/backend
+      - run: npm ci
+        working-directory: nexora/frontend
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+        env:
+          CI: 'true'
+          NEXORA_DIR: ${{ github.workspace }}/nexora
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relatorio-playwright
+          path: playwright-report/
+          retention-days: 14

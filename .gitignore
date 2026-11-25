@@ -1,0 +1,5 @@
+node_modules/
+.mariadb/
+test-results/
+playwright-report/
+blob-report/
